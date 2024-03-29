@@ -342,6 +342,40 @@ export default {
       }
       this.teaseUrl = teaseUrl
       this.loadMilovanaUrl()
+    } else {
+      this.loading = true
+      fetch('build/main.json')
+        .then(response => response.json())
+        .then(script => {
+          if (
+            !script ||
+            !script.pages ||
+            (script.modules && script.modules.nyx)
+          ) {
+            if (script.modules && script.modules.nyx) {
+              this.error = 'Sorry, NYX teases are not supported.'
+            } else {
+              this.error =
+                'Does not appear to be a valid EOS tease (Invalid Definitions)'
+            }
+
+            this.loading = false
+          } else {
+            this.previewMode = 10
+            this.title = 'Tease Test'
+            this.author = 'You'
+            this.authorId = ''
+            this.teaseId = ''
+            this.teaseKey = ''
+            if (this.title) document.title = this.title
+            this.script = script
+          }
+        })
+        .catch(e => {
+          this.error = 'Error loading tease'
+          console.error('HTML response error', e)
+          this.loading = false
+        })
     }
 
     // this.getRemoteScriptName('id=45184')

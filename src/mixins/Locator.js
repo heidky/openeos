@@ -203,6 +203,18 @@ export default {
     lookupFile(locator, preload) {
       const fileMatch = locator.match(/^file:(.*)$/)
       if (!fileMatch) return
+
+      const useLocalFiles = true
+      if (useLocalFiles) {
+        const fileName = locator.replace('file:', '')
+        const href = './build/files/' + fileName
+        return {
+          item: { type: 'generic' },
+          href,
+          locator,
+        }
+      }
+
       const extMatch = locator.match(/\.([^.]+)$/)
       const isRandom = locator.match(/\*/)
       const ext = extMatch && extMatch[1]
